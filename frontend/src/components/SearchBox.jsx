@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { api } from '../api/client.js';
 import { useDebouncedValue } from '../hooks/useDebouncedValue.js';
+import { Icon } from './Icon.jsx';
 
 const DEBOUNCE_MS = 250;
 
@@ -36,8 +37,9 @@ export function SearchBox({ onError }) {
   }
 
   return (
-    <section>
+    <section className="search">
       <form
+        className="card toolbar"
         onSubmit={(event) => {
           event.preventDefault();
           search(query.trim());
@@ -51,17 +53,24 @@ export function SearchBox({ onError }) {
           }}
           placeholder="Search files"
         />
-        <button type="submit">Find exact name</button>
+        <button className="primary" type="submit">
+          Find exact name
+        </button>
       </form>
-      <ul>
-        {suggestions.map((file) => (
-          <li key={file.id}>
-            <button onClick={() => search(file.name)}>{file.name}</button>
-          </li>
-        ))}
-      </ul>
+      {suggestions.length > 0 && (
+        <ul className="card list suggestions">
+          {suggestions.map((file) => (
+            <li key={file.id}>
+              <button className="node-name folder" onClick={() => search(file.name)}>
+                <Icon type="file" />
+                {file.name}
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
       {results && (
-        <p>
+        <p className="muted">
           {results.length} file(s) named "{query}"
         </p>
       )}

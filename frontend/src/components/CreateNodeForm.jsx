@@ -12,13 +12,15 @@ export function CreateNodeForm({ onCreate }) {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <select value={type} onChange={(event) => setType(event.target.value)}>
+    <form className="card toolbar" onSubmit={handleSubmit}>
+      <select value={type} onChange={(event) => setType(event.target.value)} aria-label="Type">
         <option value="folder">Folder</option>
         <option value="file">File</option>
       </select>
       <input value={name} onChange={(event) => setName(event.target.value)} placeholder="Name" required />
-      <button type="submit">Create</button>
+      <button className="primary" type="submit">
+        Create
+      </button>
     </form>
   );
 }

@@ -41,10 +41,10 @@ export function App() {
   const deleteNode = (node) => mutate(() => api.deleteNode(node.id));
 
   return (
-    <main>
+    <main className="app">
       <h1>File browser</h1>
       <SearchBox onError={showError} />
-      {error && <p role="alert">{error}</p>}
+      {error && <p className="error" role="alert">{error}</p>}
       <Breadcrumbs path={path} onNavigate={(depth) => setPath(path.slice(0, depth))} />
       <CreateNodeForm onCreate={createNode} />
       <NodeList nodes={nodes} onOpen={(folder) => setPath([...path, folder])} onDelete={deleteNode} />
