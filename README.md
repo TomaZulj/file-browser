@@ -86,4 +86,5 @@ frontend/src
 - The schema is created at backend startup from a single SQL file. A real deployment would use a migration tool.
 - Backend tests use an in-memory repository, so the SQL itself is only verified by running the app, not by automated tests.
 - API types are declared separately in `backend` and `frontend` (no shared package) to keep the repo simple.
+- Raw parameterized SQL in the repository instead of an ORM or query builder. The schema is small and the queries (prefix search, `NULLS NOT DISTINCT` index) are clearer in SQL, at the cost of queries not being type-checked.
 - No authentication, as per the brief.
