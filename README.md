@@ -50,7 +50,15 @@ npm install
 npm test
 ```
 
-Type-check with `npm run typecheck` (in `backend` or `frontend`). Tests need no database. They run the service and HTTP layers against an in-memory repository.
+`npm test` needs no database. It runs the service and HTTP layers against an in-memory repository.
+
+Integration tests run the HTTP API against a real PostgreSQL (start it with `docker compose up -d db`). They use their own schema, so existing data is untouched:
+
+```sh
+npm run test:integration
+```
+
+Type-check with `npm run typecheck` (in `backend` or `frontend`).
 
 ## API
 
@@ -84,7 +92,7 @@ frontend/src
 - Names are unique per folder case-insensitively (`Report.txt` and `report.txt` conflict). Exact-name search is case-sensitive, prefix search is not.
 - Search results show file names only, not their full path, and there is no move, rename or pagination of folder contents.
 - The schema is created at backend startup from a single SQL file. A real deployment would use a migration tool.
-- Backend tests use an in-memory repository, so the SQL itself is only verified by running the app, not by automated tests.
+- The default tests use an in-memory repository. The SQL is covered by a separate integration suite that needs a running PostgreSQL.
 - API types are declared separately in `backend` and `frontend` (no shared package) to keep the repo simple.
 - Raw parameterized SQL in the repository instead of an ORM or query builder. The schema is small and the queries are clearer in SQL, at the cost of queries not being type-checked.
 - No authentication, as per the brief.

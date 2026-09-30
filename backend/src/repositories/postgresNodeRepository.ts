@@ -49,7 +49,7 @@ export class PostgresNodeRepository implements NodeRepository {
     const { rows } = await this.pool.query<NodeRow>(
       `SELECT ${COLUMNS} FROM nodes
        WHERE parent_id IS NOT DISTINCT FROM $1
-       ORDER BY type, lower(name)`,
+       ORDER BY (type = 'folder') DESC, lower(name)`,
       [parentId],
     );
     return rows.map(toNode);
