@@ -102,7 +102,7 @@ export function SearchBox({ currentFolder, onReveal, onError }: SearchBoxProps) 
         <ul className="card list suggestions">
           {suggestions.map((file) => (
             <li key={file.id}>
-              <button className="node-name folder" onClick={() => search(file.name)}>
+              <button className="node-name clickable" onClick={() => search(file.name)}>
                 <Icon type="file" />
                 {file.name}
               </button>

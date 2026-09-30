@@ -17,7 +17,7 @@ export function NodeList({ nodes, onOpen, onDelete }: NodeListProps) {
       {nodes.map((node) => (
         <li key={node.id}>
           {node.type === 'folder' ? (
-            <button className="node-name folder" onClick={() => onOpen(node)}>
+            <button className="node-name clickable" onClick={() => onOpen(node)}>
               <Icon type="folder" />
               {node.name}
             </button>

@@ -9,21 +9,7 @@
   --danger: #dc2626;
   --hover: #f0f3f8;
   --radius: 10px;
-  color-scheme: light dark;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #111318;
-    --surface: #1a1d24;
-    --text: #e7e9ee;
-    --muted: #9aa1ad;
-    --border: #2b303a;
-    --accent: #5b8def;
-    --accent-text: #0b0d12;
-    --danger: #f87171;
-    --hover: #232833;
-  }
+  color-scheme: light;
 }
 
 * {
@@ -169,13 +155,13 @@ button.danger {
   white-space: nowrap;
 }
 
-.node-name.folder {
+.node-name.clickable {
   padding: 0;
   border: 0;
   font-weight: 500;
 }
 
-.node-name.folder:hover {
+.node-name.clickable:hover {
   background: transparent;
   text-decoration: underline;
 }
