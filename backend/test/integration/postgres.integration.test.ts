@@ -85,6 +85,17 @@ describe('HTTP API on PostgreSQL', () => {
     assert.deepEqual(await getJson('/api/nodes'), []);
   });
 
+  it('returns ancestors ordered from the root down', async () => {
+    const top = await createOk({ name: 'top', type: 'folder' });
+    const middle = await createOk({ name: 'middle', type: 'folder', parentId: top.id });
+    const file = await createOk({ name: 'a.txt', type: 'file', parentId: middle.id });
+
+    const ancestors = await getJson(`/api/nodes/${file.id}/ancestors`);
+
+    assert.deepEqual(ancestors.map((node) => node.id), [top.id, middle.id]);
+    assert.deepEqual(await getJson(`/api/nodes/${top.id}/ancestors`), []);
+  });
+
   it('searches exact names in one folder or everywhere', async () => {
     const folder = await createOk({ name: 'docs', type: 'folder' });
     await createOk({ name: 'a.txt', type: 'file' });

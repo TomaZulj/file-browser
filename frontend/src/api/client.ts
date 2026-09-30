@@ -15,6 +15,8 @@ const queryString = (params: Record<string, string | undefined>): string =>
 export const api = {
   listNodes: (parentId?: string) => request<FileSystemNode[]>(`/nodes?${queryString({ parentId })}`),
 
+  listAncestors: (id: string) => request<FileSystemNode[]>(`/nodes/${id}/ancestors`),
+
   createNode: (node: NewNode) =>
     request<FileSystemNode>('/nodes', {
       method: 'POST',
@@ -24,7 +26,8 @@ export const api = {
 
   deleteNode: (id: string) => request<void>(`/nodes/${id}`, { method: 'DELETE' }),
 
-  searchFiles: (name: string) => request<FileSystemNode[]>(`/files/search?${queryString({ name })}`),
+  searchFiles: (name: string, parentId?: string) =>
+    request<FileSystemNode[]>(`/files/search?${queryString({ name, parentId })}`),
 
   suggestFiles: (prefix: string) =>
     request<FileSystemNode[]>(`/files/suggestions?${queryString({ prefix })}`),

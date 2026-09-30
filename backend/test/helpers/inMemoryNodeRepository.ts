@@ -13,6 +13,17 @@ export class InMemoryNodeRepository implements NodeRepository {
     return [...this.nodes.values()].filter((node) => node.parentId === parentId);
   }
 
+  async findAncestors(id: string) {
+    const ancestors: FileSystemNode[] = [];
+    let parentId = this.nodes.get(id)?.parentId ?? null;
+    while (parentId) {
+      const parent = this.nodes.get(parentId)!;
+      ancestors.unshift(parent);
+      parentId = parent.parentId;
+    }
+    return ancestors;
+  }
+
   async insert({ name, type, parentId }: NewNode) {
     const siblings = await this.listChildren(parentId);
     if (siblings.some((node) => node.name.toLowerCase() === name.toLowerCase())) {

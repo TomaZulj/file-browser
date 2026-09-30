@@ -236,3 +236,12 @@ button.danger {
   border-radius: 0;
   text-align: left;
 }
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.search > .card {
+  margin-top: 8px;
+}

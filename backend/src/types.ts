@@ -19,6 +19,8 @@ export type CreateNodeInput = Omit<NewNode, 'parentId'> & { parentId?: string | 
 export interface NodeRepository {
   findById(id: string): Promise<FileSystemNode | null>;
   listChildren(parentId: string | null): Promise<FileSystemNode[]>;
+  /** Folders above the node, ordered from the root down to its parent. */
+  findAncestors(id: string): Promise<FileSystemNode[]>;
   insert(node: NewNode): Promise<FileSystemNode>;
   deleteById(id: string): Promise<boolean>;
   findFilesByName(name: string, parentId?: string): Promise<FileSystemNode[]>;

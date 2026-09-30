@@ -25,6 +25,10 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:3000/api/nodes"]
+      interval: 2s
+      retries: 15
 
   frontend:
     build:
@@ -33,7 +37,8 @@ services:
     ports:
       - "8080:80"
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
 
 volumes:
   db-data:

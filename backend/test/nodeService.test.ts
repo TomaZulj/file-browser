@@ -19,6 +19,16 @@ describe('NodeService', () => {
     assert.deepEqual(await service.listChildren(docs.id), [nested]);
   });
 
+  it('lists ancestors from the root down to the parent', async () => {
+    const docs = await service.create({ name: 'docs', type: 'folder' });
+    const nested = await service.create({ name: 'nested', type: 'folder', parentId: docs.id });
+    const file = await service.create({ name: 'a.txt', type: 'file', parentId: nested.id });
+
+    assert.deepEqual(await service.listAncestors(file.id), [docs, nested]);
+    assert.deepEqual(await service.listAncestors(docs.id), []);
+    await assert.rejects(service.listAncestors(crypto.randomUUID()), NotFoundError);
+  });
+
   it('rejects a missing parent', async () => {
     await assert.rejects(
       service.create({ name: 'a.txt', type: 'file', parentId: crypto.randomUUID() }),

@@ -55,6 +55,22 @@ export class PostgresNodeRepository implements NodeRepository {
     return rows.map(toNode);
   }
 
+  async findAncestors(id: string): Promise<FileSystemNode[]> {
+    const { rows } = await this.pool.query<NodeRow>(
+      `WITH RECURSIVE ancestors AS (
+         SELECT parent.id, parent.parent_id, parent.name, parent.type, parent.created_at, 0 AS depth
+         FROM nodes child JOIN nodes parent ON parent.id = child.parent_id
+         WHERE child.id = $1
+         UNION ALL
+         SELECT n.id, n.parent_id, n.name, n.type, n.created_at, a.depth + 1
+         FROM nodes n JOIN ancestors a ON n.id = a.parent_id
+       )
+       SELECT ${COLUMNS} FROM ancestors ORDER BY depth DESC`,
+      [id],
+    );
+    return rows.map(toNode);
+  }
+
   async insert({ name, type, parentId }: NewNode): Promise<FileSystemNode> {
     try {
       const { rows } = await this.pool.query<NodeRow>(

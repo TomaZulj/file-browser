@@ -65,6 +65,27 @@ describe('HTTP API', () => {
     assert.equal(response.status, 409);
   });
 
+  it('returns the folder path of a node', async () => {
+    const folder = await (await post({ name: 'parent', type: 'folder' })).json();
+    const file = await (await post({ name: 'x.txt', type: 'file', parentId: folder.id })).json();
+
+    const ancestors: FileSystemNode[] = await (await request(`/api/nodes/${file.id}/ancestors`)).json();
+
+    assert.deepEqual(ancestors.map((node) => node.name), ['parent']);
+  });
+
+  it('returns JSON errors for unknown routes and malformed bodies', async () => {
+    const unknownRoute = await request('/api/nope');
+    const malformedBody = await request('/api/nodes', { method: 'POST', body: '{bad' });
+
+    for (const response of [unknownRoute, malformedBody]) {
+      assert.match(response.headers.get('content-type') ?? '', /application\/json/);
+      assert.ok((await response.json()).error);
+    }
+    assert.equal(unknownRoute.status, 404);
+    assert.equal(malformedBody.status, 400);
+  });
+
   it('returns 400 for invalid input', async () => {
     const invalidName = await post({ name: 'a/b', type: 'file' });
     const invalidType = await post({ name: 'x', type: 'shortcut' });

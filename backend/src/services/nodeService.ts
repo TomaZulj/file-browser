@@ -17,6 +17,13 @@ export class NodeService {
     return this.nodeRepository.listChildren(parentId);
   }
 
+  async listAncestors(id: string): Promise<FileSystemNode[]> {
+    if (!(await this.nodeRepository.findById(id))) {
+      throw new NotFoundError(`Node ${id} not found`);
+    }
+    return this.nodeRepository.findAncestors(id);
+  }
+
   async create({ name, type, parentId = null }: CreateNodeInput): Promise<FileSystemNode> {
     if (parentId) {
       await this.requireFolder(parentId);

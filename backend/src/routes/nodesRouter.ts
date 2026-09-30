@@ -15,6 +15,11 @@ export function createNodesRouter(nodeService: NodeService): Router {
     res.status(201).location(`/api/nodes/${node.id}`).json(node);
   });
 
+  router.get('/:id/ancestors', async (req, res) => {
+    const { id } = idParams.parse(req.params);
+    res.json(await nodeService.listAncestors(id));
+  });
+
   router.delete('/:id', async (req, res) => {
     const { id } = idParams.parse(req.params);
     await nodeService.delete(id);

@@ -66,11 +66,12 @@ Type-check with `npm run typecheck` (in `backend` or `frontend`).
 | --- | --- | --- |
 | `GET` | `/api/nodes?parentId=` | List children of a folder (root when `parentId` is omitted) |
 | `POST` | `/api/nodes` | Create a folder or file. Body: `{ "name", "type": "file" \| "folder", "parentId"? }`. Returns `201` |
+| `GET` | `/api/nodes/:id/ancestors` | Folders above a node, from the root down. Used to open a search result in its folder |
 | `DELETE` | `/api/nodes/:id` | Delete a file or folder (folders delete their whole subtree). Returns `204` |
 | `GET` | `/api/files/search?name=&parentId=` | Files with exactly this name. Searches everywhere when `parentId` is omitted |
 | `GET` | `/api/files/suggestions?prefix=` | Top 10 files whose name starts with `prefix` (case-insensitive), sorted by name |
 
-Errors return `{ "error": "message" }` with `400` (invalid input), `404` (unknown id) or `409` (name already used in that folder).
+Errors return `{ "error": "message" }` with `400` (invalid input), `404` (unknown id or route) or `409` (name already used in that folder).
 
 ## Design
 
@@ -90,7 +91,8 @@ frontend/src
 ## Trade-offs and limitations
 
 - Names are unique per folder case-insensitively (`Report.txt` and `report.txt` conflict). Exact-name search is case-sensitive, prefix search is not.
-- Search results show file names only, not their full path, and there is no move, rename or pagination of folder contents.
+- There is no move, rename or pagination of folder contents. Folder search in the UI is limited to direct children of the current folder.
+- The frontend has no automated tests.
 - The schema is created at backend startup from a single SQL file. A real deployment would use a migration tool.
 - The default tests use an in-memory repository. The SQL is covered by a separate integration suite that needs a running PostgreSQL.
 - API types are declared separately in `backend` and `frontend` (no shared package) to keep the repo simple.
