@@ -1,7 +1,7 @@
 FROM node:24-alpine
 WORKDIR /app
-COPY package*.json ./
+COPY backend/package*.json ./
 RUN npm ci --omit=dev
-COPY src ./src
+COPY backend/src ./src
 USER node
 CMD ["npm", "start"]

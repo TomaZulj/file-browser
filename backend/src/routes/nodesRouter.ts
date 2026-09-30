@@ -1,7 +1,8 @@
 import { Router } from 'express';
-import { createBody, idParams, listQuery } from './schemas.js';
+import type { NodeService } from '../services/nodeService.ts';
+import { createBody, idParams, listQuery } from './schemas.ts';
 
-export function createNodesRouter(nodeService) {
+export function createNodesRouter(nodeService: NodeService): Router {
   const router = Router();
 
   router.get('/', async (req, res) => {

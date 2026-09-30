@@ -1,17 +1,21 @@
 import { useCallback, useEffect, useState } from 'react';
-import { api } from './api/client.js';
-import { Breadcrumbs } from './components/Breadcrumbs.jsx';
-import { CreateNodeForm } from './components/CreateNodeForm.jsx';
-import { NodeList } from './components/NodeList.jsx';
-import { SearchBox } from './components/SearchBox.jsx';
+import { api } from './api/client.ts';
+import type { FileSystemNode, NodeType } from './api/types.ts';
+import { Breadcrumbs } from './components/Breadcrumbs.tsx';
+import { CreateNodeForm } from './components/CreateNodeForm.tsx';
+import { NodeList } from './components/NodeList.tsx';
+import { SearchBox } from './components/SearchBox.tsx';
 
 export function App() {
-  const [path, setPath] = useState([]);
-  const [nodes, setNodes] = useState([]);
-  const [error, setError] = useState(null);
+  const [path, setPath] = useState<FileSystemNode[]>([]);
+  const [nodes, setNodes] = useState<FileSystemNode[]>([]);
+  const [error, setError] = useState<string | null>(null);
   const currentFolder = path.at(-1);
 
-  const showError = useCallback((cause) => setError(cause.message), []);
+  const showError = useCallback(
+    (cause: unknown) => setError(cause instanceof Error ? cause.message : 'Unexpected error'),
+    [],
+  );
 
   const reload = useCallback(async () => {
     try {
@@ -26,7 +30,7 @@ export function App() {
     reload();
   }, [reload]);
 
-  async function mutate(action) {
+  async function mutate(action: () => Promise<unknown>) {
     try {
       await action();
       await reload();
@@ -37,8 +41,8 @@ export function App() {
     }
   }
 
-  const createNode = (node) => mutate(() => api.createNode({ ...node, parentId: currentFolder?.id }));
-  const deleteNode = (node) => mutate(() => api.deleteNode(node.id));
+  const createNode = (node: { name: string; type: NodeType }) => mutate(() => api.createNode({ ...node, parentId: currentFolder?.id }));
+  const deleteNode = (node: FileSystemNode) => mutate(() => api.deleteNode(node.id));
 
   return (
     <main className="app">

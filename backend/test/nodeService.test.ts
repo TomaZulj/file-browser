@@ -1,11 +1,11 @@
 import assert from 'node:assert/strict';
 import { beforeEach, describe, it } from 'node:test';
-import { ConflictError, NotFoundError, ValidationError } from '../src/errors.js';
-import { NodeService } from '../src/services/nodeService.js';
-import { InMemoryNodeRepository } from './helpers/inMemoryNodeRepository.js';
+import { ConflictError, NotFoundError, ValidationError } from '../src/errors.ts';
+import { NodeService } from '../src/services/nodeService.ts';
+import { InMemoryNodeRepository } from './helpers/inMemoryNodeRepository.ts';
 
 describe('NodeService', () => {
-  let service;
+  let service: NodeService;
 
   beforeEach(() => {
     service = new NodeService(new InMemoryNodeRepository());

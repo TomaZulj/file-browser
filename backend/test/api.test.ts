@@ -1,29 +1,32 @@
 import assert from 'node:assert/strict';
 import { after, before, describe, it } from 'node:test';
-import { createApp } from '../src/app.js';
-import { NodeService } from '../src/services/nodeService.js';
-import { InMemoryNodeRepository } from './helpers/inMemoryNodeRepository.js';
+import type { AddressInfo } from 'node:net';
+import type { Server } from 'node:http';
+import { createApp } from '../src/app.ts';
+import type { FileSystemNode } from '../src/types.ts';
+import { NodeService } from '../src/services/nodeService.ts';
+import { InMemoryNodeRepository } from './helpers/inMemoryNodeRepository.ts';
 
 describe('HTTP API', () => {
-  let server;
-  let baseUrl;
+  let server: Server;
+  let baseUrl: string;
 
   before(async () => {
     const app = createApp(new NodeService(new InMemoryNodeRepository()));
     server = app.listen(0);
     await new Promise((resolve) => server.once('listening', resolve));
-    baseUrl = `http://localhost:${server.address().port}`;
+    baseUrl = `http://localhost:${(server.address() as AddressInfo).port}`;
   });
 
   after(() => server.close());
 
-  const request = (path, options = {}) =>
+  const request = (path: string, options: RequestInit = {}) =>
     fetch(`${baseUrl}${path}`, {
       ...options,
       headers: { 'Content-Type': 'application/json' },
     });
 
-  const post = (body) => request('/api/nodes', { method: 'POST', body: JSON.stringify(body) });
+  const post = (body: object) => request('/api/nodes', { method: 'POST', body: JSON.stringify(body) });
 
   it('creates a folder and a file inside it, then finds the file', async () => {
     const folderResponse = await post({ name: 'docs', type: 'folder' });
@@ -34,7 +37,7 @@ describe('HTTP API', () => {
     const fileResponse = await post({ name: 'cv.pdf', type: 'file', parentId: folder.id });
     assert.equal(fileResponse.status, 201);
 
-    const children = await (await request(`/api/nodes?parentId=${folder.id}`)).json();
+    const children: FileSystemNode[] = await (await request(`/api/nodes?parentId=${folder.id}`)).json();
     assert.deepEqual(children.map((node) => node.name), ['cv.pdf']);
 
     const search = await (await request(`/api/files/search?name=cv.pdf&parentId=${folder.id}`)).json();

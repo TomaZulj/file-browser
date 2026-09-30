@@ -1,4 +1,11 @@
-export function Breadcrumbs({ path, onNavigate }) {
+import type { FileSystemNode } from '../api/types.ts';
+
+interface BreadcrumbsProps {
+  path: FileSystemNode[];
+  onNavigate: (depth: number) => void;
+}
+
+export function Breadcrumbs({ path, onNavigate }: BreadcrumbsProps) {
   return (
     <nav className="breadcrumbs" aria-label="Breadcrumb">
       <button className="link" onClick={() => onNavigate(0)}>

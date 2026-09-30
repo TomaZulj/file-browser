@@ -1,6 +1,13 @@
-import { Icon } from './Icon.jsx';
+import type { FileSystemNode } from '../api/types.ts';
+import { Icon } from './Icon.tsx';
 
-export function NodeList({ nodes, onOpen, onDelete }) {
+interface NodeListProps {
+  nodes: FileSystemNode[];
+  onOpen: (folder: FileSystemNode) => void;
+  onDelete: (node: FileSystemNode) => void;
+}
+
+export function NodeList({ nodes, onOpen, onDelete }: NodeListProps) {
   if (nodes.length === 0) {
     return <p className="card muted">This folder is empty.</p>;
   }

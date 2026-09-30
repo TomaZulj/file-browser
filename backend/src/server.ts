@@ -1,8 +1,8 @@
-import { createApp } from './app.js';
-import { config } from './config.js';
-import { applySchema, createPool } from './db/pool.js';
-import { PostgresNodeRepository } from './repositories/postgresNodeRepository.js';
-import { NodeService } from './services/nodeService.js';
+import { createApp } from './app.ts';
+import { config } from './config.ts';
+import { applySchema, createPool } from './db/pool.ts';
+import { PostgresNodeRepository } from './repositories/postgresNodeRepository.ts';
+import { NodeService } from './services/nodeService.ts';
 
 const pool = createPool(config.databaseUrl);
 await applySchema(pool);

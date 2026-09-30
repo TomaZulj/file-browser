@@ -1,14 +1,19 @@
 import { useEffect, useState } from 'react';
-import { api } from '../api/client.js';
-import { useDebouncedValue } from '../hooks/useDebouncedValue.js';
-import { Icon } from './Icon.jsx';
+import { api } from '../api/client.ts';
+import type { FileSystemNode } from '../api/types.ts';
+import { useDebouncedValue } from '../hooks/useDebouncedValue.ts';
+import { Icon } from './Icon.tsx';
 
 const DEBOUNCE_MS = 250;
 
-export function SearchBox({ onError }) {
+interface SearchBoxProps {
+  onError: (cause: unknown) => void;
+}
+
+export function SearchBox({ onError }: SearchBoxProps) {
   const [query, setQuery] = useState('');
-  const [suggestions, setSuggestions] = useState([]);
-  const [results, setResults] = useState(null);
+  const [suggestions, setSuggestions] = useState<FileSystemNode[]>([]);
+  const [results, setResults] = useState<FileSystemNode[] | null>(null);
   const debouncedQuery = useDebouncedValue(query.trim(), DEBOUNCE_MS);
 
   useEffect(() => {
@@ -26,7 +31,7 @@ export function SearchBox({ onError }) {
     };
   }, [debouncedQuery, onError]);
 
-  async function search(name) {
+  async function search(name: string) {
     setQuery(name);
     setSuggestions([]);
     try {

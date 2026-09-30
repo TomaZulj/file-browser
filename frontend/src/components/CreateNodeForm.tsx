@@ -1,10 +1,15 @@
-import { useState } from 'react';
+import { useState, type SubmitEvent } from 'react';
+import type { NodeType } from '../api/types.ts';
 
-export function CreateNodeForm({ onCreate }) {
+interface CreateNodeFormProps {
+  onCreate: (node: { name: string; type: NodeType }) => Promise<boolean>;
+}
+
+export function CreateNodeForm({ onCreate }: CreateNodeFormProps) {
   const [name, setName] = useState('');
-  const [type, setType] = useState('folder');
+  const [type, setType] = useState<NodeType>('folder');
 
-  async function handleSubmit(event) {
+  async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
     if (await onCreate({ name, type })) {
       setName('');
@@ -13,7 +18,7 @@ export function CreateNodeForm({ onCreate }) {
 
   return (
     <form className="card toolbar" onSubmit={handleSubmit}>
-      <select value={type} onChange={(event) => setType(event.target.value)} aria-label="Type">
+      <select value={type} onChange={(event) => setType(event.target.value as NodeType)} aria-label="Type">
         <option value="folder">Folder</option>
         <option value="file">File</option>
       </select>

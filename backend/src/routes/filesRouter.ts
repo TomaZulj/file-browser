@@ -1,7 +1,8 @@
 import { Router } from 'express';
-import { searchQuery, suggestionsQuery } from './schemas.js';
+import type { NodeService } from '../services/nodeService.ts';
+import { searchQuery, suggestionsQuery } from './schemas.ts';
 
-export function createFilesRouter(nodeService) {
+export function createFilesRouter(nodeService: NodeService): Router {
   const router = Router();
 
   router.get('/search', async (req, res) => {

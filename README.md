@@ -2,8 +2,8 @@
 
 A browser-based file system: create folders and files, navigate the tree, search files by exact name or by name prefix, and delete.
 
-- **Backend**: Node.js 24 LTS, Express 5 (async/await handlers), PostgreSQL 18 via `pg`
-- **Frontend**: React 19 (Vite 8)
+- **Backend**: TypeScript on Node.js 24 LTS (runs `.ts` directly, no build step), Express 5 (async/await handlers), PostgreSQL 18 via `pg`
+- **Frontend**: TypeScript, React 19 (Vite 8)
 - **Deployment**: Docker Compose
 
 ## Run with Docker
@@ -50,7 +50,7 @@ npm install
 npm test
 ```
 
-Tests need no database. They run the service and HTTP layers against an in-memory repository.
+Type-check with `npm run typecheck` (in `backend` or `frontend`). Tests need no database. They run the service and HTTP layers against an in-memory repository.
 
 ## API
 
@@ -73,7 +73,7 @@ backend/src
   repositories/  All SQL
   db/            Connection pool and schema
 frontend/src
-  api/           Fetch wrapper for the backend
+  api/           Fetch wrapper and API types
   components/    UI
 ```
 
@@ -85,4 +85,5 @@ frontend/src
 - Search results show file names only, not their full path, and there is no move, rename or pagination of folder contents.
 - The schema is created at backend startup from a single SQL file. A real deployment would use a migration tool.
 - Backend tests use an in-memory repository, so the SQL itself is only verified by running the app, not by automated tests.
+- API types are declared separately in `backend` and `frontend` (no shared package) to keep the repo simple.
 - No authentication, as per the brief.
