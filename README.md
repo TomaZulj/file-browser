@@ -77,7 +77,7 @@ frontend/src
   components/    UI
 ```
 
-**Data model**: one `nodes` table holding both files and folders (`id`, `parent_id`, `name`, `type`, `created_at`). `parent_id` is a self-referencing foreign key with `ON DELETE CASCADE`, so deleting a folder removes its subtree in a single statement. A unique index on `(parent_id, lower(name))` prevents duplicate names within a folder (root included), and is enforced by the database so concurrent requests cannot race past it. A partial index on `lower(name)` for files backs the prefix search.
+**Data model**: one `nodes` table holding both files and folders (`id`, `parent_id`, `name`, `type`, `created_at`). `parent_id` is a self-referencing foreign key with `ON DELETE CASCADE`, so deleting a folder removes its subtree in a single statement. A unique index on `(parent_id, lower(name))` (with `NULLS NOT DISTINCT`, so the root counts as a folder too) prevents duplicate names within a folder, and is enforced by the database so concurrent requests cannot race past it. A partial index on `lower(name)` for files backs the prefix search.
 
 ## Trade-offs and limitations
 

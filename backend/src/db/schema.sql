@@ -6,9 +6,9 @@ CREATE TABLE IF NOT EXISTS nodes (
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
--- Unique names per folder, including the root where parent_id is NULL.
+-- Unique names per folder. NULLS NOT DISTINCT makes the root (parent_id NULL) one folder too.
 CREATE UNIQUE INDEX IF NOT EXISTS nodes_unique_name_per_parent
-  ON nodes (COALESCE(parent_id, '00000000-0000-0000-0000-000000000000'), lower(name));
+  ON nodes (parent_id, lower(name)) NULLS NOT DISTINCT;
 
 -- Serves the "starts with" file search.
 CREATE INDEX IF NOT EXISTS nodes_file_name_prefix
