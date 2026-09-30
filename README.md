@@ -6,6 +6,8 @@ A browser-based file system: create folders and files, navigate the tree, search
 - **Frontend**: TypeScript, React 19 (Vite 8)
 - **Deployment**: Docker Compose
 
+![Demo](docs/demo.gif)
+
 ## Run with Docker
 
 Requires Docker with Compose. Stop with `docker compose down` (add `-v` to also delete the data).

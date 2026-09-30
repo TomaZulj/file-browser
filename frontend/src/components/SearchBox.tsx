@@ -25,11 +25,12 @@ export function SearchBox({ currentFolder, onReveal, onError }: SearchBoxProps) 
   const [suggestions, setSuggestions] = useState<FileSystemNode[]>([]);
   const [results, setResults] = useState<SearchResults | null>(null);
   const containerRef = useRef<HTMLElement>(null);
+  const searchedQuery = useRef<string | null>(null);
   const debouncedQuery = useDebouncedValue(query.trim(), DEBOUNCE_MS);
   const activeScope = currentFolder ? scope : 'all';
 
   useEffect(() => {
-    if (!debouncedQuery) {
+    if (!debouncedQuery || debouncedQuery === searchedQuery.current) {
       setSuggestions([]);
       return;
     }
@@ -54,6 +55,7 @@ export function SearchBox({ currentFolder, onReveal, onError }: SearchBoxProps) 
   }, []);
 
   async function search(name: string) {
+    searchedQuery.current = name;
     setQuery(name);
     setSuggestions([]);
     try {
@@ -82,6 +84,7 @@ export function SearchBox({ currentFolder, onReveal, onError }: SearchBoxProps) 
         <input
           value={query}
           onChange={(event) => {
+            searchedQuery.current = null;
             setQuery(event.target.value);
             setResults(null);
           }}
