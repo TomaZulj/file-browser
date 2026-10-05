@@ -8,10 +8,6 @@ const pool = createPool(config.databaseUrl);
 await applySchema(pool);
 
 const app = createApp(new NodeService(new PostgresNodeRepository(pool)));
-const server = app.listen(config.port, () => {
+app.listen(config.port, () => {
   console.log(`API listening on port ${config.port}`);
-});
-
-process.on('SIGTERM', () => {
-  server.close(() => pool.end());
 });
