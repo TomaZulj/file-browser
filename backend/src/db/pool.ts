@@ -2,7 +2,9 @@ import { readFile } from 'node:fs/promises';
 import pg from 'pg';
 
 export function createPool(databaseUrl: string): pg.Pool {
-  return new pg.Pool({ connectionString: databaseUrl });
+  const pool = new pg.Pool({ connectionString: databaseUrl });
+  pool.on('error', (error) => console.error('Idle database client error', error));
+  return pool;
 }
 
 export async function applySchema(pool: pg.Pool): Promise<void> {
