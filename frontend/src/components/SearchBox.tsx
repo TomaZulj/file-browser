@@ -26,6 +26,7 @@ export function SearchBox({ currentFolder, onReveal, onError }: SearchBoxProps) 
   const [results, setResults] = useState<SearchResults | null>(null);
   const containerRef = useRef<HTMLElement>(null);
   const searchedQuery = useRef<string | null>(null);
+  const latestSearch = useRef(0);
   const debouncedQuery = useDebouncedValue(query.trim(), DEBOUNCE_MS);
   const activeScope = currentFolder ? scope : 'all';
 
@@ -55,14 +56,20 @@ export function SearchBox({ currentFolder, onReveal, onError }: SearchBoxProps) 
   }, []);
 
   async function search(name: string) {
+    const searchId = ++latestSearch.current;
     searchedQuery.current = name;
     setQuery(name);
     setSuggestions([]);
     try {
       const parentId = activeScope === 'folder' ? currentFolder?.id : undefined;
-      setResults({ name, files: await api.searchFiles(name, parentId) });
+      const files = await api.searchFiles(name, parentId);
+      if (searchId === latestSearch.current) {
+        setResults({ name, files });
+      }
     } catch (error) {
-      onError(error);
+      if (searchId === latestSearch.current) {
+        onError(error);
+      }
     }
   }
 
@@ -85,6 +92,7 @@ export function SearchBox({ currentFolder, onReveal, onError }: SearchBoxProps) 
           value={query}
           onChange={(event) => {
             searchedQuery.current = null;
+            latestSearch.current++;
             setQuery(event.target.value);
             setResults(null);
           }}
